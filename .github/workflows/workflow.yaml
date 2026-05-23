@@ -1,0 +1,46 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Scrapper
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          P_KEY: ${{ secrets.API_KEY }}
+          P_URL: ${{ secrets.P_URL }}
+        run: node scrapper
+
+      - name: Push JSON to another repo
+        env:
+          TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+        run: |
+          # clone target repo
+          git clone https://x-access-token:${TOKEN}@github.com/aisehiwebwala/musiccc.git target-repo
+
+          # copy your generated JSON file
+          cp records.json target-repo/records.json
+
+          # commit + push
+          cd target-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add records.json
+          git commit -m "update scraped JSON" || echo "no changes"
+          git push origin main
