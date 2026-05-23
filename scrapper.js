@@ -1,9 +1,10 @@
 const fs = require("fs")
 const dotenv = require("dotenv")
 dotenv.config()
-const {album_lists, song_lists} = require("./tokens")
+const { album_lists, song_lists } = require("./tokens")
 
 const complete_data = []
+const song_ids = new Set()
 const BASE_URL = process.env.BASE_URL
 
 const P_URL = process.env.P_URL
@@ -21,11 +22,12 @@ const getDownloadURL = async (url) => {
     }
 }
 
-const uploadFile = async(body)=>{
+const uploadFile = async (body) => {
     try {
-        const response = await fetch(`${P_URL}/file/records.json`,{method:"PUT",body:JSON.stringify(body),
-            headers:{
-                "Authorization": "Basic "+btoa(":"+P_KEY)
+        const response = await fetch(`${P_URL}/file/records.json`, {
+            method: "PUT", body: JSON.stringify(body),
+            headers: {
+                "Authorization": "Basic " + btoa(":" + P_KEY)
             }
         })
     } catch (error) {
@@ -49,10 +51,20 @@ const getSongDetails = async (full_data) => {
         "year": full_data?.year,
         "image": full_data?.image,
         "album": full_data?.more_info?.album,
-        "album_id":full_data?.more_info?.album_id,
+        "album_id": full_data?.more_info?.album_id,
         "duration": full_data?.more_info?.duration,
         "artists": full_data?.more_info?.artistMap?.primary_artists.map((val) => val.name),
         "download_url": generateDownloadURLS(await getDownloadURL(full_data?.more_info?.encrypted_media_url))
+    }
+}
+
+const addData = (dets) => {
+    try {
+        if (song_ids.has(dets?.id)) return
+        song_ids.add(dets?.id)
+        complete_data.push(dets)
+    } catch (error) {
+        console.log(`Error : ${error.message} : ${dets?.title}`)
     }
 }
 
@@ -61,7 +73,7 @@ const saveSong = async (token) => {
         const response = await fetch(`${BASE_URL}?__call=webapi.get&api_version=4&_format=json&_marker=0&ctx=web6dot0&token=${token}&type=song`)
         const json_response = await response.json()
         const song_details = await getSongDetails(json_response.songs[0])
-        complete_data.push(song_details)
+        addData(song_details)
     } catch (error) {
         console.log(error.message)
     }
@@ -71,19 +83,21 @@ const saveAlbum = async (token) => {
     try {
         const response = await fetch(`${BASE_URL}?__call=webapi.get&api_version=4&_format=json&_marker=0&ctx=web6dot0&token=${token}&type=album`)
         const json_response = await response.json()
-        song_details = await Promise.all(json_response.list.map((val) => {
+        const song_details = await Promise.all(json_response.list.map((val) => {
             return getSongDetails(val)
         }))
-        complete_data.push(...song_details)
+        for(const dets of song_details){
+            addData(dets)
+        }
     } catch (error) {
         console.log(error.message)
     }
 }
 
 const createRecord = async () => {
-    a_l = [...new Set(album_lists)]
-    s_l = [...new Set(song_lists)]
-    
+    const a_l = [...new Set(album_lists)]
+    const s_l = [...new Set(song_lists)]
+
     try {
         for (const token of a_l) {
             await saveAlbum(token)
