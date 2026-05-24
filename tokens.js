@@ -22,7 +22,7 @@ const album_lists = ['51wWO8XAY-4_', 'jg5reqzpT7k_',
     'erQGXQItIFI_', 'QpcbT2oOB74_',
     'vk2wVV8fSg0_', 'Wky5mcRgfbc_',
     'sUaYu26J-UA_', 'zcVCNzg6Uvw_',
-    "WraOviBrkpo_", "EPJXYk,wkdA_", "men3PmZB4w0_", "iu3aaqmoeIk_", "KUHo4K,LD7A_", "GcR7iFIi5gE_", "8Ps4qqBA6,Y_", "MJVyyWfhWe4_", "RvGqKSIL2ZY_", "kw5AWtM1BZk_", "VCjKuSJcwxs_", "ft4MGKjYem0_", "fzGxJ2eyORk_", "k,TIgv1ORbc_", "HR757XLeV10_", "kLG-OKbVmvM_", "C3Br8V0qKrc_", "MpkyruMLllM_", "G1WcU,XEkfI_", "ALuu2RMhPDI_", "bGnqYFTPFRU_", "jg5reqzpT7k_", "PJIEIawr5j0_", "HImhTnw6KWw_", "l2uT56HmBl8_", "wSM2AOubajk_"]
+    "evTOS8ealLo_","aHri6Xb32P0_","MAx1NsLoGJ4_", "WraOviBrkpo_", "EPJXYk,wkdA_", "men3PmZB4w0_", "iu3aaqmoeIk_", "KUHo4K,LD7A_", "GcR7iFIi5gE_", "8Ps4qqBA6,Y_", "MJVyyWfhWe4_", "RvGqKSIL2ZY_", "kw5AWtM1BZk_", "VCjKuSJcwxs_", "ft4MGKjYem0_", "fzGxJ2eyORk_", "k,TIgv1ORbc_", "HR757XLeV10_", "kLG-OKbVmvM_", "C3Br8V0qKrc_", "MpkyruMLllM_", "G1WcU,XEkfI_", "ALuu2RMhPDI_", "bGnqYFTPFRU_", "jg5reqzpT7k_", "PJIEIawr5j0_", "HImhTnw6KWw_", "l2uT56HmBl8_", "wSM2AOubajk_"]
 const song_lists = ["NwICVTt9BHI", "O1A8ACFWfXs", "QA09Uz5gUUk"]
 const artist_lists = ["LlRWpHzy3Hk_","OaFg9HPZgq8_","YNIh2poJKsY_"]
 

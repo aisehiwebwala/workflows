@@ -99,6 +99,13 @@ const saveArtist = async (token) => {
         const response = await fetch(`https://www.jiosaavn.com/api.php?__call=webapi.get&token=${token}&type=artist&p=0&n_song=50&n_album=50&sub_type=&category=&sort_order=asc&includeMetaTags=0&ctx=web6dot0&api_version=4&_format=json&_marker=0`)
         const json_response = await response.json()
         const albums_data = json_response.topAlbums;
+        const songs_data = json_response.topSongs;
+        const song_details = await Promise.all(songs_data.map((val) => {
+            return getSongDetails(val)
+        }))
+        for (const dets of song_details) {
+            addData(dets)
+        }
         for (const { perma_url } of albums_data) {
             await saveAlbum(perma_url.split("/").pop())
         }
