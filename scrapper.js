@@ -1,7 +1,7 @@
 const fs = require("fs")
 const dotenv = require("dotenv")
 dotenv.config()
-const { album_lists, song_lists } = require("./tokens")
+const { album_lists, song_lists, artist_lists } = require("./tokens")
 
 const complete_data = []
 const song_ids = new Set()
@@ -86,8 +86,21 @@ const saveAlbum = async (token) => {
         const song_details = await Promise.all(json_response.list.map((val) => {
             return getSongDetails(val)
         }))
-        for(const dets of song_details){
+        for (const dets of song_details) {
             addData(dets)
+        }
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+const saveArtist = async (token) => {
+    try {
+        const response = await fetch(`https://www.jiosaavn.com/api.php?__call=webapi.get&token=${token}&type=artist&p=0&n_song=50&n_album=50&sub_type=&category=&sort_order=asc&includeMetaTags=0&ctx=web6dot0&api_version=4&_format=json&_marker=0`)
+        const json_response = await response.json()
+        const albums_data = json_response.topAlbums;
+        for (const { perma_url } of albums_data) {
+            await saveAlbum(perma_url.split("/").pop())
         }
     } catch (error) {
         console.log(error.message)
@@ -97,6 +110,7 @@ const saveAlbum = async (token) => {
 const createRecord = async () => {
     const a_l = [...new Set(album_lists)]
     const s_l = [...new Set(song_lists)]
+    const ar_l = [...new Set(artist_lists)]
 
     try {
         for (const token of a_l) {
@@ -105,6 +119,10 @@ const createRecord = async () => {
         for (const token of s_l) {
             await saveSong(token)
         }
+        for (const token of ar_l) {
+            await saveArtist(token)
+        }
+
         fs.writeFileSync("records.json", JSON.stringify(complete_data))
         console.log(`Done : ${complete_data.length}`)
     } catch (error) {
