@@ -1,0 +1,16 @@
+name: IP Check
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run CURL
+        run: curl https://api.ipify.org?format=json
